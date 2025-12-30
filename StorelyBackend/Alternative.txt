@@ -1,0 +1,29 @@
+in FileUploadController.java we can also add this for Serve File method beacuse ->
+✔ Clean and readable
+✔ Less boilerplate
+✔ Harder to mess up
+✔ Plays well with filters, interceptors, exceptions
+✔ Best for REST APIs
+
+@GetMapping("/download/{filename}")
+public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws IOException {
+
+    Path filePath = Paths.get("uploads").resolve(filename).normalize();
+
+    Resource resource = new UrlResource(filePath.toUri());
+    if (!resource.exists()) {
+        return ResponseEntity.notFound().build();
+    }
+
+    String contentType = Files.probeContentType(filePath);
+    if (contentType == null) {
+        contentType = "application/octet-stream";
+    }
+
+    return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + resource.getFilename() + "\"")
+            .body(resource);
+}
+

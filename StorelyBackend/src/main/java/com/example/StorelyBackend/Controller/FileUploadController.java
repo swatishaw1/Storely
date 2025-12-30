@@ -1,22 +1,21 @@
 package com.example.StorelyBackend.Controller;
 
 
-import com.example.StorelyBackend.Config.CorsConfig;
+
 import com.example.StorelyBackend.Service.FileService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @RestController
@@ -29,5 +28,17 @@ public class FileUploadController {
     @PostMapping("/uploads")
     public ResponseEntity<String> uploadFile(@RequestParam("files") MultipartFile[] files) throws IOException {
         return fileService.uploadFile(files);
+    }
+
+    //Method to serve File
+    @GetMapping(value = "/uploads/{fileName}",produces = MediaType.ALL_VALUE)
+    public void serveFile(@PathVariable("fileName") String fileName, HttpServletResponse response) throws IOException {
+        fileName = Paths.get(fileName).getFileName().toString();//This prevents attack
+        Path path = Paths.get("uploads").resolve(fileName);//Build actual paths
+        response.setContentType(Files.probeContentType(path));//detects file type
+        response.setHeader("Content-Disposition",
+                "inline; filename=\"" + fileName + "\"");//To see the documents in browser
+        Files.copy(path, response.getOutputStream());//Write files to http responce
+        response.getOutputStream().flush();//Sends all remaining bytes to client
     }
 }
