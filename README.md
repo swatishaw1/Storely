@@ -149,7 +149,7 @@ This project helped me understand:
 
 ```bash
 git clone https://github.com/swatishaw1/Storely
-cd storely-backend
+cd StorelyBackend
 ```
 
 ```bash
