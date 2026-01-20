@@ -27,3 +27,28 @@ public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws 
             .body(resource);
 }
 
+Upload structure
+Browser
+   ↓
+MultipartFile
+   ↓
+InputStream   ← (file.getInputStream())
+   ↓
+ENCRYPT
+   ↓
+Encrypted bytes
+   ↓
+Saved to disk
+
+Decrypt
+Encrypted file on disk
+   ↓
+InputStream
+   ↓
+DECRYPT
+   ↓
+Original bytes
+   ↓
+HttpServletResponse OutputStream
+   ↓
+Browser

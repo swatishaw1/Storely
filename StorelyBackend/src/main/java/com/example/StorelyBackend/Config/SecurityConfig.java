@@ -20,7 +20,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/files/**","/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/files/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/files/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

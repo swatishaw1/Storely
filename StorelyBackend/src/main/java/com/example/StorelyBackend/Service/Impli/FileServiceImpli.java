@@ -1,6 +1,8 @@
 package com.example.StorelyBackend.Service.Impli;
 
+import com.example.StorelyBackend.Service.EncrypDecryp;
 import com.example.StorelyBackend.Service.FileService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 @Service
 public class FileServiceImpli implements FileService {
+
+    private EncrypDecryp encrypDecryp;
     @Override
     public ResponseEntity<String> uploadFile(MultipartFile[] files) throws IOException {
         String uploads = "uploads";
@@ -32,17 +36,17 @@ public class FileServiceImpli implements FileService {
         return new ResponseEntity<>("File Uploaded Successfully", HttpStatus.OK);
     }
 
+
+
     @Override
-    public InputStream getFiles(String path, String fileName) {
-        String fullname = path + File.separator + fileName;
-        //File.seperator has / or \ it added where it is needed
-        InputStream inputStream;
-        try {
-            inputStream = new FileInputStream(fullname);//It reads file byte by byte
-            //DB logic to return input string
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);//if file not found
-        }
-        return inputStream;
+    public void getFiles(String fileName, HttpServletResponse response) throws IOException {
+        fileName = Paths.get(fileName).getFileName().toString();//This prevents attack
+        Path path = Paths.get("uploads").resolve(fileName);//Build actual paths
+        response.setContentType(Files.probeContentType(path));//detects file type
+        response.setHeader("Content-Disposition",
+                "inline; filename=\"" + fileName + "\"");//To see the documents in browser
+        Files.copy(path, response.getOutputStream());//Write files to http responce
+        response.getOutputStream().flush();//Sends all remaining bytes to client
     }
+
 }
