@@ -3,6 +3,7 @@ package com.example.StorelyBackend.Service.Impli;
 import com.example.StorelyBackend.Service.EncrypDecryp;
 import com.example.StorelyBackend.Service.FileService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,9 @@ import java.util.UUID;
 @Service
 public class FileServiceImpli implements FileService {
 
+    @Autowired
     private EncrypDecryp encrypDecryp;
+
     @Override
     public ResponseEntity<String> uploadFile(MultipartFile[] files) throws IOException {
         String uploads = "uploads";
@@ -31,7 +34,8 @@ public class FileServiceImpli implements FileService {
         for (MultipartFile file: files){
             String name = UUID.randomUUID().toString()+file.getOriginalFilename()+File.separator;
             Path path = Paths.get(uploads, name);
-            Files.write(path, file.getBytes());
+            OutputStream fileOutputStream = encrypDecryp.encrypt(file);
+            Files.write(path, ((ByteArrayOutputStream)fileOutputStream).toByteArray());
         }
         return new ResponseEntity<>("File Uploaded Successfully", HttpStatus.OK);
     }
@@ -45,8 +49,21 @@ public class FileServiceImpli implements FileService {
         response.setContentType(Files.probeContentType(path));//detects file type
         response.setHeader("Content-Disposition",
                 "inline; filename=\"" + fileName + "\"");//To see the documents in browser
-        Files.copy(path, response.getOutputStream());//Write files to http responce
+        InputStream encryptedFile = Files.newInputStream(path);//Encrypted Files
+        encrypDecryp.decrypt(encryptedFile,response.getOutputStream());
         response.getOutputStream().flush();//Sends all remaining bytes to client
     }
+
+    /*@Override
+    public void getFiles(String fileName, HttpServletResponse response) throws IOException {
+        fileName = Paths.get(fileName).getFileName().toString();//This prevents attack
+        Path path = Paths.get("uploads").resolve(fileName);//Build actual paths
+        response.setContentType(Files.probeContentType(path));//detects file type
+        response.setHeader("Content-Disposition",
+                "inline; filename=\"" + fileName + "\"");//To see the documents in browser
+        *//*OutputStream outputStream = encrypDecryp.decrypt(response.getOutputStream());*//*
+        Files.copy(path, response.getOutputStream());//Write files to http responce
+        response.getOutputStream().flush();//Sends all remaining bytes to client
+    }*/
 
 }
