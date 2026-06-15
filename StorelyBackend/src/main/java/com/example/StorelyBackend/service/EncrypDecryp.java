@@ -1,4 +1,4 @@
-package com.example.StorelyBackend.Service;
+package com.example.StorelyBackend.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

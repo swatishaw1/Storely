@@ -1,7 +1,7 @@
-package com.example.StorelyBackend.Service.Impli;
+package com.example.StorelyBackend.service.implementation;
 
-import com.example.StorelyBackend.Service.EncrypDecryp;
-import com.example.StorelyBackend.Service.FileService;
+import com.example.StorelyBackend.service.EncrypDecryp;
+import com.example.StorelyBackend.service.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
-public class FileServiceImpli implements FileService {
+public class FileServiceImpl implements FileService {
 
     @Autowired
     private EncrypDecryp encrypDecryp;

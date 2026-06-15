@@ -1,4 +1,4 @@
-package com.example.StorelyBackend.Service;
+package com.example.StorelyBackend.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

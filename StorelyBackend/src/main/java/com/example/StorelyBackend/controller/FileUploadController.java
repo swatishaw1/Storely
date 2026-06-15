@@ -1,8 +1,8 @@
-package com.example.StorelyBackend.Controller;
+package com.example.StorelyBackend.controller;
 
 
 
-import com.example.StorelyBackend.Service.FileService;
+import com.example.StorelyBackend.service.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

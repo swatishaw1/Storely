@@ -1,5 +1,5 @@
-package com.example.StorelyBackend.Service.Impli;
-import com.example.StorelyBackend.Service.EncrypDecryp;
+package com.example.StorelyBackend.service.implementation;
+import com.example.StorelyBackend.service.EncrypDecryp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,13 +13,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Service
-public class EncrypDecrypImpli implements EncrypDecryp {
+public class EncrypDecrypImpl implements EncrypDecryp {
 
     private final SecretKey secretKey;
     private final byte[] IV;
     private final Integer T_LEN;
 
-    public EncrypDecrypImpli(@Value("${secret_key_String}") String secretKey, @Value("${IV_String}") String iv,@Value("${tLen}") Integer tLen) {
+    public EncrypDecrypImpl(@Value("${secret_key_String}") String secretKey, @Value("${IV_String}") String iv,@Value("${tLen}") Integer tLen) {
         this.secretKey = new SecretKeySpec(decode(secretKey),"AES");
         IV = decode(iv);
         T_LEN = tLen;

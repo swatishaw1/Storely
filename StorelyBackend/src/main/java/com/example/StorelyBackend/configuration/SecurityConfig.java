@@ -1,4 +1,4 @@
-package com.example.StorelyBackend.Config;
+package com.example.StorelyBackend.configuration;
 
 
 import org.springframework.context.annotation.Bean;
